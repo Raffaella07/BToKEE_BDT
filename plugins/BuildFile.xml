@@ -22,7 +22,7 @@
 <use name="FWCore/ParameterSet"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ServiceRegistry"/>
-<use name="LowPtElectrons/LowPtElectrons"/>
+<use name="/LowPtElectrons/LowPtElectrons"/>
 <use name="MagneticField/Engine"/>
 <use name="MagneticField/ParametrizedEngine"/>
 <use name="RecoParticleFlow/PFTracking"/>
