@@ -30,7 +30,7 @@ def get_model(pkl):
 
 # test dataset
 test = pd.read_hdf(
-    '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr_ele2PF/bdt_cmssw_mva_id/'
+    '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr/bdt_cmssw_mva_id/'
     '/bdt_cmssw_mva_id_testdata.hdf', key='data')
 #test = test[np.invert(test.signal)] 
 #test = test[np.invert(abs(test.trk_eta)>=2.4)] 
@@ -41,7 +41,7 @@ print test.size
 
 # train dataset
 train = pd.read_hdf(
-    '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr_ele2PF/bdt_cmssw_mva_id/'
+    '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr/bdt_cmssw_mva_id/'
     '/bdt_cmssw_mva_id_traindata.hdf', key='data')
 #train = train[np.invert(train.signal)] 
 #train = train[np.invert(abs(train.trk_eta)>=2.4)] 
@@ -52,7 +52,7 @@ print train.size
 
 # variables
 base = get_model(
-    '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr_ele2PF/bdt_cmssw_mva_id/'
+    '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr/bdt_cmssw_mva_id/'
     '/test__cmssw_mva_id_BDT.pkl')
 based_features, _ = get_features('cmssw_mva_id')
 

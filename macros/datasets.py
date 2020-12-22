@@ -4,8 +4,8 @@ from glob import glob
 #tag = '2019Feb05'
 #posix = '2019Feb05'
 
-tag = '2020Apr'
-posix = '2020Apr'
+tag = '2020Jul_ele2PF_ret'
+posix = '2020Jul_ele2PF_ret'
 target_dataset = 'test'
 
 import socket
@@ -33,8 +33,8 @@ for inf in all_sets:
 #input_files['limited'] = [j for i, j in enumerate(input_files['all']) if i % 2]
 #input_files['debug'] = ['/afs/cern.ch/user/m/mverzett/work/RK94v4/src/LowPtElectrons/LowPtElectrons/run/track_features.root']
 
-#input_files['test'] = ['/eos/home-r/ratramon/BToKEE_bdtsamples/FullVar_nores.root']
-input_files['test'] = ['/eos/home-r/ratramon/BToKEE_bdtsamples/AllVar_cat0.root']
+input_files['test'] = ['/eos/home-r/ratramon/BToKEE_bdtsamples/ele2PF_new_BigBkg.root']
+#input_files['test'] = ['/eos/home-r/ratramon/BToKEE_bdtsamples/AllVar_cat0.root']
 #input_files['test'] = ['/afs/cern.ch/user/r/ratramon/Bparking/CMSSW_10_2_15/src/macros/BToKEE_tmvaXevent/analysis/sig_res.root']
 #input_files['test'] = ['/afs/cern.ch/user/r/ratramon/Bparking/CMSSW_10_2_15/src/macros/BToKEE_tmvaXevent/analysis/sample_bkg.root']
 
@@ -104,25 +104,49 @@ def get_data_sync(dataset, columns, nthreads=2*multiprocessing.cpu_count(), excl
       for column in columns:
          ret[column] = np.concatenate((ret[column],arrays[column]))
    return ret
+#def get_data_sync(dataset, columns, nthreads=2*multiprocessing.cpu_count(), exclude={}, path='Tree'):
+#  if dataset not in input_files:
+#     raise ValueError('The dataset %s does not exist, I have %s' % (dataset, ', '.join(input_files.keys())))
+#  print 'getting files from "%s": ' % dataset
+#  print ' \n'.join(input_files[dataset])
+#  infiles = [uproot.open(i) for i in input_files[dataset]]
+#  print 'available branches:\n',infiles[0][path].keys()
+#  print "here!"
+#  if columns == 'all':
+#  	columns = [i for i in infiles[0][path].keys() if i not in exclude]
+#  try:
+#     ret = infiles[0][path].arrays(columns)
+#  except KeyError as ex:
+#     print 'Exception! ', ex
+#     set_trace()
+#     raise RuntimeError('Failed to open %s properly' % infiles[0])
+#  for infile in infiles[1:]:
+#     try:
+#        arrays = infile[path].arrays(columns)
+#     except:
+#        raise RuntimeError('Failed to open %s properly' % infile)         
+#     for column in columns:
+#        ret[column] = np.concatenate((ret[column],arrays[column]))
+#  return ret
 
 from sklearn.cluster import KMeans
 from sklearn.externals import joblib
 import json
 from pdb import set_trace
 
-apply_weight = np.vectorize(lambda x, y: y.get(x), excluded={2})
+#apply_weight = np.vectorize(lambda x, y: y.get(x), excluded={2})
 
-def kmeans_weighter(features, fname):
-   kmeans = joblib.load(fname)
-   cluster = kmeans.predict(features)
-   str_weights = json.load(open(fname.replace('.plk', '.json')))   
-   weights = {}
-   for i in str_weights:
-      try:
-         weights[int(i)] = str_weights[i]
-      except:
-         pass
-   return apply_weight(cluster, weights)
+#def kmeans_weighter(features, fname):
+#  kmeans = joblib.load(fname)
+#  cluster = kmeans.predict(features)
+#  str_weights = json.load(open(fname.replace('.plk', '.json')))   
+#  weights = {}
+#  for i in str_weights:
+#     try:
+#        weights[int(i)] = str_weights[i]
+#     except:
+#        pass
+#  return apply_weight(cluster, weights)
 
 def training_selection(df,category=0):
  
@@ -224,10 +248,10 @@ def pre_process_data(dataset, features, for_seeding=False, keep_nonmatch=False):
    ## from sklearn.externals import joblib
    ## reweighter = joblib.load('%s/%s_reweighting.pkl' % (mods, dataset))
    ## weights = reweighter.predict_weights(data[['trk_pt', 'trk_eta']])
-   kmeans_model = '%s/kmeans_%s_weighter.plk' % (mods, dataset)#  __________________________aggiusta con check su esistenza file
-   if not os.path.isfile(kmeans_model):
-      print 'I could not find the appropriate model, using the general instead'
-      kmeans_model = '%s/kmeans_%s_weighter.plk' % (mods, tag)
+  # kmeans_model = '%s/kmeans_%s_weighter.plk' % (mods, dataset)#  __________________________aggiusta con check su esistenza file
+  # if not os.path.isfile(kmeans_model):
+   #   print 'I could not find the appropriate model, using the general instead'
+   #   kmeans_model = '%s/kmeans_%s_weighter.plk' % (mods, tag)
 #  weights = kmeans_weighter(
 #  	   data[['BToKEE_pt', 'BToKEE_eta']],
 #   	   kmeans_model

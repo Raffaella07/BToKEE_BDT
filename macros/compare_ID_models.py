@@ -30,7 +30,7 @@ def get_model(pkl):
 
 # test dataset
 nores = pd.read_hdf(
-    '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr_ele2PF/bdt_cmssw_mva_id/'
+    '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr_newPF_2Bkg/bdt_cmssw_mva_id/'
     '/bdt_cmssw_mva_id_testdata.hdf', key='data')
 #test = test[np.invert(test.is_egamma)] 
 #test = test[np.invert(abs(test.trk_eta)>=2.4)] 
@@ -39,8 +39,8 @@ nores = pd.read_hdf(
 print nores.size
 
 #res = pd.read_hdf(
- #   '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr/bdt_cmssw_mva_id/'
- #   '/bdt_cmssw_mva_id_testdata_nores.hdf', key='data')
+  # '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr/bdt_cmssw_mva_id/'
+  # '/bdt_cmssw_mva_id_testdata_nores.hdf', key='data')
 #test = test[np.invert(test.is_egamma)] 
 #test = test[np.invert(abs(test.trk_eta)>=2.4)] 
 #test = test[np.invert(test.trk_pt<0.5)] 
@@ -49,10 +49,15 @@ print nores.size
 
 # default variables
 base = get_model(
-    '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr_ele2PF/bdt_cmssw_mva_id/'
-    '/test__cmssw_mva_id_BDT.pkl')
+    '../../LowPtElectrons/LowPtElectrons/macros/models/2020Apr_newPF_2Bkg/bdt_cmssw_mva_id/'
+   '/test__cmssw_mva_id_BDT.pkl')
+
+#base = xgb.Booster({'nthread': 4})  # init model
+#base.load_model( 'xgb_FullModel_Otto.model')
+
+#based_features, _ = base.feature_names()
 based_features, _ = get_features('cmssw_mva_id')
-print based_features
+#print based_features
 nores['base_out'] = base.predict_proba(nores[based_features].as_matrix())[:,1]
 nores['base_out'].loc[np.isnan(nores.base_out)] = -999 
 base_roc_nores = roc_curve(
@@ -128,7 +133,7 @@ plt.legend(loc='best')
 plt.xlim(0., 1)
 plt.savefig('ROC_comparison.png')
 plt.gca().set_xscale('log')
-plt.xlim(1e-4, 1)
+plt.xlim(1e-5, 1)
 plt.savefig('ROC_comparison_log.png')
 plt.clf()
 
@@ -143,7 +148,7 @@ basesignal_nores = basesignal_nores[nores.signal==1]
 #basesignal_res = basesignal_res[res.signal==1]
 basebkg = nores.base_out.as_matrix()
 basebkg = basebkg[nores.signal==0]
-plt.hist(basesignal_nores, bins=70, color="orange", lw=0, label=' resonant signal ',normed=1,alpha=0.5)
+plt.hist(basesignal_nores, bins=70, color="orange", lw=0, label='non resonant signal ',normed=1,alpha=0.5)
 #plt.hist(basesignal_res, bins=70, color="green", lw=0, label='resonant signal ',normed=1,alpha=0.5)
 plt.hist(basebkg, bins=70, color="skyblue", lw=0, label='bkg',normed=1,alpha=0.5)
 plt.show()
@@ -257,7 +262,7 @@ with open('ROC.txt','w+') as f:
    fmeritw = fmerit * eff_base
    jmap[wpname] = [mistag_base, eff_base]
    print 'eff (base): %.3f' % eff_base
-   print 'mistag (base): %.3f' % mistag_base
+   print 'mistag (base): %.6f' % mistag_base
    print "signal (base) : %.3f" % signal_base
    print "bkg (base) : %.3f" % bkg_base
    print "S/sqrt(S+B): %.3f"% fmerit

@@ -261,8 +261,21 @@ if not args.notraining :
    with open('%s/%s_%s_%s_BDT.json' % (mods, dataset, args.jobtag, args.what), 'w') as info:
       json.dump(args_dict, info)
 
+
 # make plots
 print "Making plots ..."
+# features importance, chiara
+print(clf.feature_importances_)
+# plot
+xgb.plot_importance(clf)
+plt.rcParams['figure.figsize'] = [5, 5]
+plt.show()
+#plt.bar(range(len(clf.feature_importances_)), clf.feature_importances_)
+#plt.show()
+try : plt.savefig('%s/%s_%s_%s_features.png' % (plots, dataset, args.jobtag, args.what))
+except : pass
+
+
 plt.figure(figsize=[8, 8])
 plt.title('%s training' % args.what.replace("_"," "))
 plt.plot(
